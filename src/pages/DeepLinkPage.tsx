@@ -1,10 +1,16 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { getOS } from '../utils/device'
 import APP_CONFIG from '../utils/deeplink'
 import '../App.css'
 
 function DeepLinkPage() {
   const os = getOS()
+  const navigate = useNavigate()
+
+  const handleClick = (targetOs: 'ios' | 'android') => {
+    window.location.href = APP_CONFIG.storeUrl[targetOs]
+    navigate('/store', { state: { os: targetOs } })
+  }
 
   return (
     <div className="container">
@@ -14,17 +20,17 @@ function DeepLinkPage() {
 
         {os === 'ios' && (
           <div className="store-buttons">
-            <Link to="/store" state={{ os: 'ios' }} className="store-btn ios">
+            <button onClick={() => handleClick('ios')} className="store-btn ios">
               App Store에서 열기
-            </Link>
+            </button>
           </div>
         )}
 
         {os === 'android' && (
           <div className="store-buttons">
-            <Link to="/store" state={{ os: 'android' }} className="store-btn android">
+            <button onClick={() => handleClick('android')} className="store-btn android">
               Play Store에서 열기
-            </Link>
+            </button>
           </div>
         )}
 
@@ -32,12 +38,12 @@ function DeepLinkPage() {
           <div className="status">
             <p>모바일 기기에서 접속해주세요</p>
             <div className="store-buttons">
-              <Link to="/store" state={{ os: 'ios' }} className="store-btn ios">
+              <button onClick={() => handleClick('ios')} className="store-btn ios">
                 App Store에서 열기
-              </Link>
-              <Link to="/store" state={{ os: 'android' }} className="store-btn android">
+              </button>
+              <button onClick={() => handleClick('android')} className="store-btn android">
                 Play Store에서 열기
-              </Link>
+              </button>
             </div>
           </div>
         )}
