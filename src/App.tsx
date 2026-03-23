@@ -23,13 +23,15 @@ function App() {
     // 딥링크로 앱 열기 시도
     window.location.href = APP_CONFIG.deepLink[detected]
 
-    // 앱이 없으면 2초 후 스토어로 이동
-    const timer = setTimeout(() => {
-      setStatus('fallback')
-      window.location.href = APP_CONFIG.storeUrl[detected]
-    }, 2000)
-
-    return () => clearTimeout(timer)
+    if (detected === 'ios') {
+      // iOS: 앱이 없으면 타임아웃 후 스토어로
+      const timer = setTimeout(() => {
+        setStatus('fallback')
+        window.location.href = APP_CONFIG.storeUrl[detected]
+      }, 1500)
+      return () => clearTimeout(timer)
+    }
+    // Android: Intent URL의 S.browser_fallback_url이 자동 처리
   }, [])
 
   return (
