@@ -1,33 +1,18 @@
-import { useEffect, useState } from 'react'
-import { getOS, type DeviceOS } from './utils/device'
+import { useState } from 'react'
+import { getOS } from './utils/device'
 import APP_CONFIG from './utils/deeplink'
 import './App.css'
 
 function App() {
-  const [os, setOs] = useState<DeviceOS | null>(null)
-
-  useEffect(() => {
-    const detected = getOS()
-    setOs(detected)
-
-    if (detected !== 'unknown') {
-      // 바로 스토어로 이동
-      window.location.href = APP_CONFIG.storeUrl[detected]
-    }
-  }, [])
+  // index.html에서 모바일은 이미 리다이렉트됨
+  // 여기는 PC 등 리다이렉트 안 된 경우의 fallback UI
+  const [os] = useState(() => getOS())
 
   return (
     <div className="container">
       <div className="card">
         <img src={APP_CONFIG.icon} alt={APP_CONFIG.name} className="app-icon" />
         <h1 className="app-name">{APP_CONFIG.name}</h1>
-
-        {os === null && (
-          <div className="status">
-            <div className="spinner" />
-            <p>디바이스 확인 중...</p>
-          </div>
-        )}
 
         {os === 'unknown' && (
           <div className="status">
@@ -43,7 +28,7 @@ function App() {
           </div>
         )}
 
-        {os !== null && os !== 'unknown' && (
+        {os !== 'unknown' && (
           <div className="status">
             <div className="spinner" />
             <p>스토어로 이동 중...</p>
