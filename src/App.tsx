@@ -3,35 +3,17 @@ import { getOS, type DeviceOS } from './utils/device'
 import APP_CONFIG from './utils/deeplink'
 import './App.css'
 
-type Status = 'detecting' | 'redirecting' | 'fallback'
-
 function App() {
   const [os, setOs] = useState<DeviceOS | null>(null)
-  const [status, setStatus] = useState<Status>('detecting')
 
   useEffect(() => {
     const detected = getOS()
     setOs(detected)
 
-    if (detected === 'unknown') {
-      setStatus('fallback')
-      return
+    if (detected !== 'unknown') {
+      // 바로 스토어로 이동
+      window.location.href = APP_CONFIG.storeUrl[detected]
     }
-
-    setStatus('redirecting')
-
-    // 딥링크로 앱 열기 시도
-    window.location.href = APP_CONFIG.deepLink[detected]
-
-    if (detected === 'ios') {
-      // iOS: 앱이 없으면 타임아웃 후 스토어로
-      const timer = setTimeout(() => {
-        setStatus('fallback')
-        window.location.href = APP_CONFIG.storeUrl[detected]
-      }, 1500)
-      return () => clearTimeout(timer)
-    }
-    // Android: Intent URL의 S.browser_fallback_url이 자동 처리
   }, [])
 
   return (
@@ -40,22 +22,14 @@ function App() {
         <img src={APP_CONFIG.icon} alt={APP_CONFIG.name} className="app-icon" />
         <h1 className="app-name">{APP_CONFIG.name}</h1>
 
-        {status === 'detecting' && (
+        {os === null && (
           <div className="status">
             <div className="spinner" />
             <p>디바이스 확인 중...</p>
           </div>
         )}
 
-        {status === 'redirecting' && (
-          <div className="status">
-            <div className="spinner" />
-            <p>앱을 여는 중...</p>
-            <p className="sub">앱이 열리지 않으면 아래 버튼을 눌러주세요</p>
-          </div>
-        )}
-
-        {status === 'fallback' && os === 'unknown' && (
+        {os === 'unknown' && (
           <div className="status">
             <p>모바일 기기에서 접속해주세요</p>
             <div className="store-buttons">
@@ -69,11 +43,15 @@ function App() {
           </div>
         )}
 
-        {status !== 'detecting' && os !== 'unknown' && os !== null && (
-          <div className="store-buttons">
-            <a href={APP_CONFIG.storeUrl[os]} className={`store-btn ${os}`}>
-              {os === 'ios' ? 'App Store' : 'Play Store'}에서 열기
-            </a>
+        {os !== null && os !== 'unknown' && (
+          <div className="status">
+            <div className="spinner" />
+            <p>스토어로 이동 중...</p>
+            <div className="store-buttons">
+              <a href={APP_CONFIG.storeUrl[os]} className={`store-btn ${os}`}>
+                {os === 'ios' ? 'App Store' : 'Play Store'}에서 열기
+              </a>
+            </div>
           </div>
         )}
       </div>
