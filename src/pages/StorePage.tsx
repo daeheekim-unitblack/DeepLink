@@ -1,16 +1,14 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, Navigate } from 'react-router-dom'
 import type { DeviceOS } from '../utils/device'
 import APP_CONFIG from '../utils/deeplink'
 import '../App.css'
 
 function StorePage() {
   const location = useLocation()
-  const navigate = useNavigate()
   const os = (location.state as { os?: DeviceOS })?.os
 
   if (!os || os === 'unknown') {
-    navigate('/')
-    return null
+    return <Navigate to="/" replace />
   }
 
   const storeName = os === 'ios' ? 'App Store' : 'Play Store'
@@ -22,7 +20,7 @@ function StorePage() {
         <h1 className="app-name">{APP_CONFIG.name}</h1>
 
         <div className="status">
-          <p>아래 버튼을 눌러 {storeName}에서 확인하세요</p>
+          <p>아래 버튼을 눌러주세요</p>
         </div>
 
         <div className="store-buttons">
