@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import type { DeviceOS } from '../utils/device'
 import APP_CONFIG from '../utils/deeplink'
@@ -9,16 +8,12 @@ function StorePage() {
   const navigate = useNavigate()
   const os = (location.state as { os?: DeviceOS })?.os
 
-  useEffect(() => {
-    if (!os || os === 'unknown') {
-      navigate('/')
-      return
-    }
+  if (!os || os === 'unknown') {
+    navigate('/')
+    return null
+  }
 
-    window.location.href = APP_CONFIG.storeUrl[os]
-  }, [os, navigate])
-
-  if (!os || os === 'unknown') return null
+  const storeName = os === 'ios' ? 'App Store' : 'Play Store'
 
   return (
     <div className="container">
@@ -27,13 +22,12 @@ function StorePage() {
         <h1 className="app-name">{APP_CONFIG.name}</h1>
 
         <div className="status">
-          <div className="spinner" />
-          <p>{os === 'ios' ? 'App Store' : 'Play Store'}로 이동 중...</p>
+          <p>아래 버튼을 눌러 {storeName}에서 확인하세요</p>
         </div>
 
         <div className="store-buttons">
           <a href={APP_CONFIG.storeUrl[os]} className={`store-btn ${os}`}>
-            {os === 'ios' ? 'App Store' : 'Play Store'}에서 열기
+            {storeName}에서 열기
           </a>
         </div>
       </div>
