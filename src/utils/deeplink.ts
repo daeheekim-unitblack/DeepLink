@@ -19,8 +19,8 @@ const APP_CONFIG: AppConfig = {
     android: 'intent://www.instagram.com/#Intent;package=com.instagram.android;scheme=https;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.instagram.android;end',
   },
   storeUrl: {
-    ios: 'itms-apps://itunes.apple.com/app/instagram/id389801252',
-    android: 'market://details?id=com.instagram.android',
+    ios: 'https://apps.apple.com/app/instagram/id389801252',
+    android: 'https://play.google.com/store/apps/details?id=com.instagram.android',
   },
 }
 
